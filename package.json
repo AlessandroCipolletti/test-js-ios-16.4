@@ -7,8 +7,8 @@
     "lint": "eslint -c .eslintrc.js src",
     "lint:quiet": "eslint -c .eslintrc.js src --quiet",
     "lint:fix": "eslint -c .eslintrc.js src --fix",
-    "build": "rm -rf ./build && parcel build src/OffscreenCanvas/index.html --no-source-maps --out-dir ./build",
-    "start": "parcel src/OffscreenCanvas/index.html --https --out-dir ./build"
+    "build": "rm -rf ./build && parcel build src/OffscreenCanvas/index.html --no-source-maps --dist-dir ./build",
+    "start": "parcel src/OffscreenCanvas/index.html --https --dist-dir ./build"
   },
   "browserslist": "> 0.25%, not dead",
   "repository": {
