@@ -134,14 +134,24 @@ const init = async () => {
   canvas4.id = 'canvas4'
   canvas4.width = canvas.width
   canvas4.height = canvas.height
-  const context4 = canvas4.getContext('bitmaprenderer')
+  const context4Bitmap = canvas4.getContext('bitmaprenderer')
+  // const context42D = canvas4.getContext('2d')
   document.body.appendChild(canvas4)
 
   id = uuidv4()
   console.time('worker2 drawing and coping')
-  worker2.postMessage({ id, width: canvas4.width, height: canvas4.width })
+  worker2.postMessage({ id, width: canvas4.width, height: canvas4.height })
   const res = await waitWorkerMessage(worker2, id)
-  context4.transferFromImageBitmap(res.drawing)
+
+  console.time('worker2 transferFromImageBitmap')
+  context4Bitmap.transferFromImageBitmap(res.drawing)
+  console.timeEnd('worker2 transferFromImageBitmap')
+  console.log(res.drawing)
+
+  // console.time('worker2 drawImage')
+  // context42D.drawImage(res.drawing, 0, 0)
+  // console.timeEnd('worker2 drawImage')
+
   console.timeEnd('worker2 drawing and coping')
 }
 
