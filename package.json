@@ -1,0 +1,30 @@
+{
+  "name": "test-js-ios-16.4",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint -c .eslintrc.js src",
+    "lint:quiet": "eslint -c .eslintrc.js src --quiet",
+    "lint:fix": "eslint -c .eslintrc.js src --fix",
+    "build": "rm -rf ./build && parcel build src/OffscreenCanvas/index.html --no-source-maps --out-dir ./build",
+    "start": "parcel src/OffscreenCanvas/index.html --https --out-dir ./build"
+  },
+  "browserslist": "> 0.25%, not dead",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlessandroCipolletti/test-js-ios-16.4.git"
+  },
+  "author": "Alessandro Cipolletti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlessandroCipolletti/test-js-ios-16.4/issues"
+  },
+  "homepage": "https://github.com/AlessandroCipolletti/test-js-ios-16.4#readme",
+  "devDependencies": {
+    "eslint": "^8.40.0",
+    "eslint-config-wesbos": "^3.2.3",
+    "parcel": "^2.8.3",
+    "prettier": "^2.8.8"
+  }
+}
