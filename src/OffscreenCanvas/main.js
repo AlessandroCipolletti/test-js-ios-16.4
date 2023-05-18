@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid'
 import './main.css'
 import {
   waitWorkerMessage,
-  delay,
   drawCircle,
   getRandomNumber,
   getRandomHexColor,
@@ -10,17 +9,6 @@ import {
   blobToBase64Async,
   getCanvasBase64Async,
 } from './utils'
-
-// TODOs
-// - comparare le performance di esportazione di un OffscreenCanvas con transferToImageBitmap VS gli altri metodi che avevo usato in drawith.me
-
-// const destinationContext = destinationVisibleCanvas.getContext('bitmaprenderer')
-// const offscreenCanvas = new OffscreenCanvas(destinationVisibleCanvas.width, destinationVisibleCanvas.height)
-// const offscreenContext = offscreenCanvas.getContext('2d')
-// // Drawing something on the offscreen canvas
-// const drawing = offscreenCanvas.transferToImageBitmap()  // <- here
-// destinationContext.transferFromImageBitmap(drawing) // <- and here
-
 
 
 const init = async () => {
