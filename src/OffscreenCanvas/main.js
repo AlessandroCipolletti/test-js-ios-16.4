@@ -17,7 +17,6 @@ const init = async () => {
 
   const textArea = document.querySelector('textarea')
   textArea.focus()
-  // await delay(1000)
 
   const canvas = document.querySelector('canvas')
   canvas.width = window.innerWidth * PXR
