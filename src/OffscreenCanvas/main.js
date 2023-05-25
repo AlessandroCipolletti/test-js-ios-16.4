@@ -160,16 +160,30 @@ const init = async () => {
   console.timeEnd('TEST 13 - main thread - bitmap to base64')
 
 
+  // console.time('TEST 14 - main thread - bitmap to blob url')
+  // console.log(URL.createObjectURL(imgToCanvas(bitmap)))
+  // console.timeEnd('TEST 14 - main thread - bitmap to blob url')
+
+
+  const offscreenCanvas3 = new OffscreenCanvas(canvas3.width, canvas3.height)
+  const offscreenContext3 = offscreenCanvas3.getContext('2d')
+  offscreenContext3.drawImage(canvas, 0, 0)
+  console.time('TEST 14 - main thread - offscreen canvas to blob')
+  const blob3 = await offscreenCanvas3.convertToBlob()
+  console.timeEnd('TEST 14 - main thread - offscreen canvas to blob')
+
+
+
 
   const worker2 = new Worker(
     new URL('worker2.js', import.meta.url),
     { type: 'module' }
   )
   const id2 = uuidv4()
-  console.time('TEST 14 - worker- bitmap to base64')
+  console.time('TEST 15 - worker- bitmap to base64')
   worker2.postMessage({ id: id2, bitmap })
   await waitWorkerMessage(worker2, id2)
-  console.timeEnd('TEST 14 - worker- bitmap to base64')
+  console.timeEnd('TEST 15 - worker- bitmap to base64')
 
 
   // const worker3 = new Worker(
