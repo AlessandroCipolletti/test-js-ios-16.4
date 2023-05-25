@@ -1,5 +1,16 @@
 const MATH = Math
 const PI = MATH.PI
+let tempCanvas
+let tempContext
+
+const MAX_THUMBNAIL_SIZE = 400
+
+
+export const initUtils = () => {
+  tempCanvas = document.createElement('canvas')
+  tempContext = tempCanvas.getContext('2d')
+}
+
 export const round = (n, d = 0) => {
   const m = d ? MATH.pow(10, d) : 1
   return MATH.round(n * m) / m
@@ -32,7 +43,7 @@ export const drawCircle = (destinationContext, x, y, alpha, size, rotation, colo
   destinationContext.fill()
 }
 export const getCanvasBase64Async = async(dom) => {
-  if (dom.tagName.toLowerCase() !== 'canvas') {
+  if (dom.tagName?.toLowerCase() !== 'canvas' && !(dom instanceof OffscreenCanvas)) {
     dom = imgToCanvas(dom)
   }
   return blobToBase64Async(await getCanvasBlobAsync(dom))
@@ -55,6 +66,9 @@ export const blobToBase64Async = (blob) => {
   })
 }
 export const getCanvasBlobAsync = (canvas) => {
+  if (canvas instanceof OffscreenCanvas) {
+    return canvas.convertToBlob()
+  }
   return new Promise((resolve, reject) => {
     canvas.toBlob(resolve)
   })
@@ -71,4 +85,40 @@ export const waitWorkerMessage = (worker, id) => {
     }
     worker.addEventListener('message', onLoaded)
   })
+}
+
+export const cropImageWithMargin = (image, l, t, r, b, margin = 0.1) => {
+  const imageWidth = (image.naturalWidth || image.width)
+  const imageHeight = (image.naturalHeight || image.height)
+  let w = round(r - l, 0)
+  let h = round(b - t, 0)
+  const x = round(Math.max(l - w * (margin / 2), 0), 0)
+  const y = round(Math.max(t - h * (margin / 2), 0), 0)
+  w = round(Math.min(w * (1 + margin), imageWidth - x), 0)
+  h = round(Math.min(h * (1 + margin), imageHeight - y), 0)
+  return [cropImage(image, x, y, w, h), x, y, w, h]
+}
+
+export const cropImage = (image, x, y, width, height) => {
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+  if (Number.isFinite(width) && Number.isFinite(height)) {
+    canvas.width = width
+    canvas.height = height
+    context.drawImage(image, x, y, width, height, 0, 0, width, height)
+  }
+  return canvas
+}
+
+export const resizeImageAndGetBase64 = (image, maxSize = MAX_THUMBNAIL_SIZE) => {
+  const imgRatio = (image.naturalWidth || image.width) / (image.naturalHeight || image.height)
+  if (imgRatio > 1) {
+    tempCanvas.width = maxSize
+    tempCanvas.height = maxSize / imgRatio
+  } else {
+    tempCanvas.height = maxSize
+    tempCanvas.width = maxSize * imgRatio
+  }
+  tempContext.drawImage(image, 0, 0, tempCanvas.width, tempCanvas.height)
+  return tempCanvas.toDataURL('image/png')
 }

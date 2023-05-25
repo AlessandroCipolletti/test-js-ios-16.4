@@ -1,32 +1,16 @@
 import {
-  drawCircle,
-  getRandomNumber,
-  getRandomHexColor,
+  getCanvasBase64Async,
 } from './utils'
 
 
 self.addEventListener('message', async event => {
-  const { id, width, height } = event.data
+  const { id, bitmap } = event.data
 
-  const canvas = new OffscreenCanvas(width, height)
-  const N = 3_000_000
+  const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
+  canvas.getContext('2d').drawImage(bitmap, 0, 0)
 
-  const context = canvas.getContext('2d')
+  // canvas.toDataURL('image/png')
+  await getCanvasBase64Async(canvas)
 
-  for (let i = 0; i < N; i++) {
-    drawCircle(
-      context,
-      getRandomNumber(canvas.width),
-      getRandomNumber(canvas.height),
-      getRandomNumber(0.1, true) + 0,
-      (getRandomNumber(50) + 10) * 2,
-      0,
-      getRandomHexColor(),
-      0
-    )
-  }
-
-  const drawing = canvas.transferToImageBitmap()
-
-  self.postMessage({ id, drawing })
+  self.postMessage({ id })
 })

@@ -2,16 +2,11 @@ import {
   drawCircle,
   getRandomNumber,
   getRandomHexColor,
-  getCanvasBlobAsync,
-  blobToBase64Async,
-  getCanvasBase64Async,
 } from './utils'
 
 
 self.addEventListener('message', async event => {
-  const { id, canvas } = event.data
-
-  const N = 3_000_000
+  const { id, canvas, N } = event.data
 
   const context = canvas.getContext('2d')
 
@@ -27,15 +22,6 @@ self.addEventListener('message', async event => {
       0
     )
   }
-
-  // const blob = await getCanvasBlobAsync(canvas)
-
-  // await blobToBase64Async(blob)
-
-  // await getCanvasBase64Async(canvas)
-
-  // canvas.toDataURL('image/png')
-  // canvas.transferToImageBitmap()
 
   self.postMessage({ id })
 })
