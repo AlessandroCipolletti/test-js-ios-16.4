@@ -186,6 +186,11 @@ const init = async () => {
   console.timeEnd('TEST 15 - worker- bitmap to base64')
 
 
+  console.time('TEST 16 - main thread - duplicate bitmap')
+  const bitmap2 = await createImageBitmap(bitmap)
+  console.timeEnd('TEST 16 - main thread - duplicate bitmap')
+  console.log(bitmap2)
+
   // const worker3 = new Worker(
   //   new URL('worker3.js', import.meta.url),
   //   { type: 'module' }
