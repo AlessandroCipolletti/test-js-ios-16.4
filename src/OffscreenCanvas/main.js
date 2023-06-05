@@ -10,7 +10,9 @@ import {
   getCanvasBlobAsync,
   blobToBase64Async,
   getCanvasBase64Async,
-} from './utils'
+  findImageContentCoords,
+  getOneFullCanvas,
+} from '../utils/utils'
 
 
 const init = async () => {
@@ -20,11 +22,6 @@ const init = async () => {
   // setInterval(() => {
   //   console.log('interval')
   // }, 100)
-
-  const canvas = document.querySelector('canvas')
-  canvas.width = window.innerWidth * PXR
-  canvas.height = window.innerHeight * PXR * 3
-  const context = canvas.getContext('2d')
 
 
   // const image = new Image()
@@ -52,21 +49,9 @@ const init = async () => {
 
 
   console.time(`TEST 1 - main thread - drawing ${N} circles on a canvas`)
-
-  for (let i = 0; i < N; i++) {
-    drawCircle(
-      context,
-      getRandomNumber(canvas.width),
-      getRandomNumber(canvas.height),
-      getRandomNumber(0.1, true) + 0,
-      (getRandomNumber(50) + 10) * PXR,
-      0,
-      getRandomHexColor(),
-      0
-    )
-  }
-
+  const canvas = getOneFullCanvas(window.innerWidth * PXR, window.innerHeight * PXR * 3)
   console.timeEnd(`TEST 1 - main thread - drawing ${N} circles on a canvas`)
+  document.body.appendChild(canvas)
 
   console.time('TEST 2 - main thread - canvas to blob async')
   const blob = await getCanvasBlobAsync(canvas)
@@ -97,8 +82,12 @@ const init = async () => {
   canvas2.height = canvas.height
   document.body.appendChild(canvas2)
 
+  console.log(canvas2.toDataURL('image/png').length)
+
   const offscreenCanvas = canvas2.transferControlToOffscreen()
   canvas2.style.width = '33vw'
+
+  console.log(canvas2.width, canvas2.height, offscreenCanvas.width, offscreenCanvas.height)
 
   let id1 = uuidv4()
   console.time(`TEST 6 - worker - drawing ${N} circles on a offscreen canvas`)
@@ -106,6 +95,11 @@ const init = async () => {
   await waitWorkerMessage(worker, id1)
   console.timeEnd(`TEST 6 - worker - drawing ${N} circles on a offscreen canvas`)
 
+
+  console.time('TEST 6.1 - main thread - canvas transferred to offscrreen -> to base64')
+  console.log(canvas2.toDataURL('image/png').length)
+  console.timeEnd('TEST 6.1 - main thread - canvas transferred to offscrreen -> to base64')
+  console.log(canvas2.width, canvas2.height, offscreenCanvas.width, offscreenCanvas.height)
 
 
   const canvas3 = document.createElement('canvas')
@@ -174,7 +168,6 @@ const init = async () => {
 
 
 
-
   const worker2 = new Worker(
     new URL('worker2.js', import.meta.url),
     { type: 'module' }
@@ -190,6 +183,24 @@ const init = async () => {
   const bitmap2 = await createImageBitmap(bitmap)
   console.timeEnd('TEST 16 - main thread - duplicate bitmap')
   console.log(bitmap2)
+
+
+  console.time('TEST 17 - main thread - canvas getImageData')
+  const imageData = context.getImageData(0, 0, canvas3.width, canvas3.height)
+  console.timeEnd('TEST 17 - main thread - canvas getImageData')
+  console.log(imageData.data.length)
+
+
+
+  const canvas4 = document.createElement('canvas')
+  canvas4.id = 'canvas4'
+  canvas4.width = canvas.width
+  canvas4.height = canvas.height
+  canvas4.context = canvas4.getContext('2d')
+  console.time('TEST 18 - main thread - findImageContentCoords su un canvas delegato a offscreen')
+  const coords = await findImageContentCoords(canvas4)
+  console.log(coords)
+  console.timeEnd('TEST 18 - main thread - findImageContentCoords su un canvas delegato a offscreen')
 
   // const worker3 = new Worker(
   //   new URL('worker3.js', import.meta.url),

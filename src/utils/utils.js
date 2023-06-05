@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 const MATH = Math
 const PI = MATH.PI
 let tempCanvas
@@ -9,6 +10,26 @@ const MAX_THUMBNAIL_SIZE = 400
 export const initUtils = () => {
   tempCanvas = document.createElement('canvas')
   tempContext = tempCanvas.getContext('2d')
+}
+
+export const getOneFullCanvas = (width, height, N = 15_000) => {
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
+  const context = canvas.getContext('2d')
+  for (let i = 0; i < N; i++) {
+    drawCircle(
+      context,
+      getRandomNumber(canvas.width),
+      getRandomNumber(canvas.height),
+      getRandomNumber(0.1, true) + 0,
+      (getRandomNumber(100) + 50),
+      0,
+      getRandomHexColor(),
+      0
+    )
+  }
+  return canvas
 }
 
 export const round = (n, d = 0) => {
@@ -121,4 +142,35 @@ export const resizeImageAndGetBase64 = (image, maxSize = MAX_THUMBNAIL_SIZE) => 
   }
   tempContext.drawImage(image, 0, 0, tempCanvas.width, tempCanvas.height)
   return tempCanvas.toDataURL('image/png')
+}
+
+export const getCanvasColorAtPx = (destinationContext, x, y, canvasWidth, canvasHeight) => {
+  const canvasData = destinationContext.getImageData(0, 0, canvasWidth, canvasHeight)
+  const pxIndex = (MATH.floor(x) + MATH.floor(y) * canvasWidth) * 4
+  const targetColor = {
+    r: canvasData.data[pxIndex + 0],
+    g: canvasData.data[pxIndex + 1],
+    b: canvasData.data[pxIndex + 2],
+    a: canvasData.data[pxIndex + 3],
+  }
+  return targetColor
+}
+
+const coordsWorker = new Worker(
+  new URL('./canvasContentCoords.js', import.meta.url),
+  { type: 'module' }
+)
+export const findImageContentCoords = async(dom, pxPrecision = 1, alphaTollerance = 0.01) => {
+  alphaTollerance = round(255 * alphaTollerance, 0)
+  pxPrecision = round(pxPrecision, 1)
+
+  const width = dom.width
+  const height = dom.height
+  const data = dom.context.getImageData(0, 0, width, height).data
+
+  const id = uuidv4()
+  coordsWorker.postMessage({ id, data, width, height, pxPrecision, alphaTollerance })
+  const res = await waitWorkerMessage(coordsWorker, id)
+  delete res.id
+  return res
 }
