@@ -1,0 +1,12 @@
+body, body * {
+  margin: 0px;
+  padding: 0px;
+  display: inline-block;
+}
+
+canvas {
+  position: relative;
+  display: inline-block;
+  width: 20vw;
+  height: 20vh;
+}

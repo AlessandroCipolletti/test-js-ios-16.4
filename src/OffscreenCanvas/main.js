@@ -49,7 +49,7 @@ const init = async () => {
 
 
   console.time(`TEST 1 - main thread - drawing ${N} circles on a canvas`)
-  const canvas = getOneFullCanvas(window.innerWidth * PXR, window.innerHeight * PXR * 3)
+  const canvas = getOneFullCanvas(window.innerWidth * PXR, window.innerHeight * PXR * 3, N)
   console.timeEnd(`TEST 1 - main thread - drawing ${N} circles on a canvas`)
   document.body.appendChild(canvas)
 
