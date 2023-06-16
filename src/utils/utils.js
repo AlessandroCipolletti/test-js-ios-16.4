@@ -1,3 +1,4 @@
+import Dexie from 'dexie'
 import { v4 as uuidv4 } from 'uuid'
 const MATH = Math
 const PI = MATH.PI
@@ -7,22 +8,37 @@ let tempContext
 const MAX_THUMBNAIL_SIZE = 400
 
 
-export const initUtils = () => {
+export const initUtils = async() => {
   tempCanvas = document.createElement('canvas')
   tempContext = tempCanvas.getContext('2d')
+  await initLocalDb()
 }
+
+let LocalDatabase
+export const initLocalDb = async() => {
+  indexedDB.deleteDatabase('db')
+  LocalDatabase = new Dexie('db')
+
+  LocalDatabase.version(1).stores({
+    objs: '++id, obj',
+  })
+
+  window.LocalDatabase = LocalDatabase
+}
+export const addObjectInsideIndexDB = (value) => LocalDatabase.objs.add({ obj: value })
+
 
 export const getOneFullCanvas = (width, height, N = 15_000) => {
   const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
+  canvas.width = width * 3
+  canvas.height = height * 3
   const context = canvas.getContext('2d')
   for (let i = 0; i < N; i++) {
     drawCircle(
       context,
       getRandomNumber(canvas.width),
       getRandomNumber(canvas.height),
-      getRandomNumber(0.1, true) + 0,
+      getRandomNumber(0.03, true) + 0,
       (getRandomNumber(100) + 50),
       0,
       getRandomHexColor(),
