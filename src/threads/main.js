@@ -10,7 +10,6 @@ import {
 } from '../utils/utils'
 
 
-
 const appendOneCanvas = async() => {
   // const worker = new Worker(
   //   new URL('worker.js', import.meta.url),
@@ -31,8 +30,8 @@ const appendOneCanvas = async() => {
   const N = 500
   const context = canvas.getContext('2d')
 
-  // while(true) {
-  for (let i = 0; i < N; i++) {
+  while(true) {
+  // for (let i = 0; i < N; i++) {
     drawCircle(
       context,
       getRandomNumber(canvas.width),
@@ -43,17 +42,19 @@ const appendOneCanvas = async() => {
       getRandomHexColor(),
       0
     )
-    await delay(5)
+    await delay(20)
   }
-
-
 }
 
 
 const init = async () => {
+  const N = new URLSearchParams(document.location.search).get('n') || 5
+
   try {
-    while(true) {
-      await appendOneCanvas()
+    // while(true) {
+    for (let i = 0; i < N; i++) {
+      // await appendOneCanvas()
+      appendOneCanvas()
     }
   } catch (error) {
     alert(error.message)

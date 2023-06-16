@@ -7,7 +7,7 @@
     "lint": "eslint -c .eslintrc.js src",
     "lint:quiet": "eslint -c .eslintrc.js src --quiet",
     "lint:fix": "eslint -c .eslintrc.js src --fix",
-    "build": "rm -rf ./build && parcel build src/index.html --no-source-maps --dist-dir ./build",
+    "build": "rm -rf ./build && parcel build src/index.html --no-source-maps --dist-dir ./build --public-url ./",
     "start": "parcel src/index.html --https --dist-dir ./build"
   },
   "browserslist": "> 0.25%, not dead",

@@ -12,8 +12,8 @@ self.addEventListener('message', async event => {
   const N = 500
   const context = canvas.getContext('2d')
 
-  // while(true) {
-  for (let i = 0; i < N; i++) {
+  while(true) {
+  // for (let i = 0; i < N; i++) {
     drawCircle(
       context,
       getRandomNumber(canvas.width),
@@ -27,5 +27,5 @@ self.addEventListener('message', async event => {
     await delay(5)
   }
 
-  self.postMessage({ id })
+  // self.postMessage({ id })
 })
