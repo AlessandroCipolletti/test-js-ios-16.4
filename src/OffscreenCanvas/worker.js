@@ -2,7 +2,7 @@ import {
   drawCircle,
   getRandomNumber,
   getRandomHexColor,
-} from './utils'
+} from '../utils/utils'
 
 
 self.addEventListener('message', async event => {

@@ -1,6 +1,6 @@
 import {
   getCanvasBase64Async,
-} from './utils'
+} from '../utils/utils'
 
 
 self.addEventListener('message', async event => {
